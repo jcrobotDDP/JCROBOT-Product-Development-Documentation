@@ -1101,10 +1101,6 @@ For example: Writing the value 1000 to VCU data address 03E4H returns an error m
 
 ---
 
-Here is the professional English translation of **Chapter 4 – Status Descriptions** (Sections 4.1 through 4.12), including all tables and explanatory text.
-
----
-
 ## IV. Status Descriptions
 
 ### 4.1 Function Status
@@ -1355,7 +1351,15 @@ Figure 5.5 Program update interface
 ---
 
 ### 5.5 Software Download
-*(Links provided in original)*
+Software Download: (Please open this link in your browser or app to download)
+
+[JcrobotsVCU_V3.17.1.zip](https://www.yuque.com/attachments/yuque/0/2026/zip/35413540/1778307526832-8b1b0af6-6c7d-4e85-80e0-b8d9e70d65ed.zip)
+
+[JcrobotsVCU_V3.14.0.zip](https://www.yuque.com/attachments/yuque/0/2025/zip/35413540/1753076503519-7195c180-5583-4e32-ac91-950a631f4016.zip)
+
+[JcrobotsVCU_V3.11.6.zip](https://www.yuque.com/attachments/yuque/0/2024/zip/35413540/1730440810018-b9eabd84-4881-41d7-890a-d2632ed54c40.zip)
+
+[JcrobotsVCU_V3.8.1.zip](https://www.yuque.com/attachments/yuque/0/2024/zip/35413540/1730440791093-d5d1a6b3-040f-47d2-b90e-460aabc61572.zip)
 
 ---
 
@@ -1366,6 +1370,9 @@ The VCU‑ROS package subscribes to `/cmd_vel` and translates it into CAN/RS232 
 - ROS1 version: noetic
 - ROS2 version: humble
 - Ubuntu: 22.04 LTS
+- <img width="733" height="323" alt="image" src="https://github.com/user-attachments/assets/390e95cb-bcd4-4fcc-9afa-0bef62d07816" />
+
+---
 
 ### 6.2 Communication Devices
 Supported devices:
@@ -1373,79 +1380,486 @@ Supported devices:
 2. CANable2.0
 3. Native SocketCAN
 4. USB‑RS232
-
-### 6.3 Ubuntu USB Device Permissions and Mapping
-Udev rules are provided for each device (idVendor/idProduct specific). For example, for CANalyst‑II: `SUBSYSTEMS=="usb", ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="0053", GROUP="users", MODE="0777"`.
-
-For CANable2.0: `KERNEL=="ttyACM*", ATTRS{idVendor}=="16d0", ATTRS{idProduct}=="117e", MODE:="0777", SYMLINK+="CANable2"`.
-
-For USB‑RS232 (PL2303GT): similar.
-
-After editing, reload udev or reboot.
-
-### 6.4 ROS1 Package Compilation
-- Place `jcrobots_vcu_rclcpp` and `serial` into the ROS1 workspace `src`.
-- Configure dynamic library path for CANalyst‑II (create .conf file in `/etc/ld.so.conf.d/` pointing to `/home/user/controlcan/libcontrolcan.so`, then `sudo ldconfig`).
-- Install serial library (`make && make install` inside serial folder).
-- Then `catkin_make`.
-
-### 6.5 ROS2 Package Compilation
-- Place `jcrobots_vcu_rclcpp` and `vcu_topic_interface` into ROS2 workspace `src`.
-- Configure CANalyst‑II library as above.
-- Install serial‑ros2 library (copy folder, cmake, make, sudo make install).
-- `colcon build`.
-
-### 6.6 ROS1 Package Execution
-Run: `rosrun jcrobots_vcu_cpp <filename>` where filename:
-- `chassis_control_canalyst` for CANalyst‑II
-- `chassis_control_socketCAN` for CANable2.0/SocketCAN (run `./canable2_init.sh` first)
-- `chassis_control_rs232` for USB‑RS232
-
-Demo programs: `demo_information.cpp`, `demo_control.cpp`.
-
-### 6.7 ROS2 Package Execution
-Similar, using `ros2 run jcrobots_vcu_rclcpp <filename>`.
-
-### 6.8 Nodes
-The main node `chassis_control_xxx`:
-- Subscribes to `/cmd_vel` (Twist) and `/vcu_control` (Control message) – contains sports_mode, function, mosfet.
-- Publishes `/vcu_info` (Information) with all battery, status, motor, odometer fields as described.
-
-### 6.9 Common Issues
-- `'struct can_frame' has no member named 'len8_dlc'`: use `can_dlc` instead of `len`.
-- `open device error!`: check CANalyst‑II Linux support or udev permissions.
-- Shared library error: verify dynamic link configuration and run `ldconfig`.
-- ROS2 foxy/humble coexistence: set environment variables or remove one.
-
-### 6.10 ROS Development Package Download
-*(Links provided in original)*
+<img width="700" height="384" alt="image" src="https://github.com/user-attachments/assets/f3a471f6-4c18-4c4b-9876-d36011ef365c" />
 
 ---
 
-## VII. Controller LAN Protocol (Modbus‑TCP)
+### 6.3 Ubuntu USB Device Permissions and Mapping
+#### 6.3.1  CANalyst-II
+
+1. Create a new udev rule named **99-myusb.rules**.
+
+   ```bash
+   sudo vim /etc/udev/rules.d/99-myusb.rules
+   ```
+   
+2. Add the following code.
+
+   ```bash
+   ACTION=="add",SUBSYSTEMS=="usb", ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="0053",GROUP="users", MODE="0777"
+   ```
+   
+3. After saving, unplug and re‑plug the USBCAN device, or restart the computer.
+
+---
+
+#### 6.3.2  CANable2.0
+
+1. Create a new udev rule. If you already have custom udev rules, you can append the following content to the existing rules file:
+
+   ```bash
+   sudo vim /etc/udev/rules.d/99-myusb.rules
+   ```
+
+2. Add the following code:
+
+   ```
+   KERNEL=="ttyACM*", ATTRS{idVendor}=="16d0", ATTRS{idProduct}=="117e", MODE:="0777", SYMLINK+="CANable2"
+   ```
+
+3. Reload udev rules
+   Reboot the machine using `sudo reboot` or execute the following command to reload the udev rules:
+
+   ```bash
+   sudo udevadm control --reload-rules && sudo service udev restart && sudo udevadm trigger
+   ```
+
+   Alternatively, you can unplug the external device, then run:
+
+   ```bash
+   sudo service udev reload
+   sudo service udev restart
+   ```
+
+   and then plug the device back in.
+
+---
+
+#### 6.3.3  USB-RS232c
+
+1. Create a new udev rule. If you already have custom udev rules, you can append the following content to the existing rules file.
+   
+   ```bash
+   sudo vim /etc/udev/rules.d/99-myusb.rules
+   ```
+   
+2. Add the following code.
+   
+   ```bash
+   KERNEL=="ttyUSB*", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="23c3", MODE:="0777", SYMLINK+="usb_rs232"
+   ```
+   
+    _Note that the USB‑to‑RS232 cable uses the PL2303GT interface chip. If you are using a different interface chip, please replace the hardware ID (idVendor and idProduct) accordingly._
+
+3. After saving the file, unplug and re‑plug the USB‑RS232 device, or restart the computer.
+
+---
+
+### 6.4 ROS1 Package Compilation
+
+  This section assumes familiarity with basic ROS1 concepts such as workspace, catkin, and source commands. If you are not familiar with these, please refer to relevant online resources.
+
+  Copy the `jcrobots_vcu_rclcpp` and `serial` folders into the `src` folder of your ROS1 workspace. Then configure the dynamic link library, install `serial`, and finally compile using `catkin_make`.
+
+#### 6.4.1 Configuring the CANalyst-II Dynamic Link Library
+
+1. Edit the linker configuration file:
+   
+   ```bash
+   vim /etc/ld.so.conf
+   ```
+   
+   Verify that the file contains the following line; if not, modify it accordingly:
+
+   ```bash
+   include /etc/ld.so.conf.d/*.conf
+   ```
+
+2. Create a `.conf` file:
+   Navigate to the `/etc/ld.so.conf.d/` directory and create a `.conf` file (the filename is arbitrary, but the extension must be `.conf`):
+
+   ```bash
+   cd /etc/ld.so.conf.d/
+   sudo vim libmy.conf
+   ```
+
+3. Add the path to the shared object (`.so`) file in the `.conf` file:
+
+    ```
+   /home/user/controlcan
+    ```
+
+   This directory contains the CANalyst-II dynamic link library `libcontrolcan.so`, where `user` is your actual username. Save and exit.
+
+4. Place the `controlcan` folder in the `/home/user/` directory.
+
+5. Update the dynamic linker cache:
+
+   ```bash
+   sudo ldconfig
+   ```
+
+   Alternatively, restart the computer.
+
+---
+
+#### 6.4.2 Installing `serial`
+
+```bash
+cd serial
+make
+sudo make install
+```
+
+---
+
+### 6.5 ROS2 Package Compilation
+
+  This section assumes familiarity with basic ROS2 concepts such as workspace, colcon build, and source commands. If you are not familiar with these, please refer to relevant online resources.
+
+  Copy the `jcrobots_vcu_rclcpp` and `vcu_topic_interface` folders into the `src` folder of your ROS2 workspace, then compile using `colcon build`.
+
+#### 6.5.1 Configuring the CANalyst-II Dynamic Link Library
+
+1. Edit the linker configuration file:
+
+   ```bash
+   vim /etc/ld.so.conf
+   ```
+
+   Verify that the file contains the following line; if not, modify it accordingly:
+
+   ```
+   include /etc/ld.so.conf.d/*.conf
+   ```
+
+2. Create a `.conf` file:
+   Navigate to the `/etc/ld.so.conf.d/` directory and create a `.conf` file (the filename is arbitrary, but the extension must be `.conf`):
+
+   ```bash
+   cd /etc/ld.so.conf.d/
+   sudo vim libmy.conf
+   ```
+
+3. Add the path to the shared object (`.so`) file in the `.conf` file:
+
+   ```
+   /home/user/controlcan
+   ```
+
+   This directory contains the CANalyst-II dynamic link library `libcontrolcan.so`, where `user` is your actual username. Save and exit.
+
+4. Place the `controlcan` folder in the `/home/user/` directory.
+
+5. Update the dynamic linker cache:
+
+   ```bash
+   sudo ldconfig
+   ```
+
+   Alternatively, restart the computer.
+
+---
+
+#### 6.5.2 Installing the ROS2 Standard Serial Communication Library
+
+Copy the `serial-ros2-master` folder to the target device directory, then run:
+
+```bash
+cd serial-ros2-master
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
+
+---
+
+### 6.6 ROS1 Package Execution
+
+Select the appropriate program to run based on the communication device in use. Execute the command:
+
+```bash
+rosrun jcrobots_vcu_cpp xxxx
+```
+
+| Device | Filename |
+| :--- | :--- |
+| CANalyst-II | `chassis_control_canalyst` |
+| CANable2.0 / SocketCAN | `chassis_control_socketCAN` |
+| USB-RS232 | `chassis_control_rs232` |
+
+If using the CANable2.0 device, first run the initialization script:
+
+```bash
+./canable2_init.sh
+```
+
+Then run the package.
+
+- `demo_information.cpp` is a demonstration program for viewing chassis information.
+- `demo_control.cpp` is a demonstration program for controlling chassis motion.
+
+---
+
+### 6.7 ROS2 Package Execution
+
+Select the appropriate program to run based on the communication device in use. Execute the command:
+
+```bash
+ros2 run jcrobots_vcu_rclcpp xxxx
+```
+
+| Device | Filename |
+| :--- | :--- |
+| CANalyst-II | `chassis_control_canalyst` |
+| CANable2.0 / SocketCAN | `chassis_control_socketCAN` |
+| USB-RS232 | `chassis_control_rs232` |
+
+If using the CANable2.0 device, first run the initialization script:
+
+```bash
+./canable2_init.sh
+```
+Then run the package.
+
+- `demo_information.cpp` is a demonstration program for viewing chassis information.
+- `demo_control.cpp` is a demonstration program for controlling chassis motion.
+
+---
+
+### 6.8 Nodes
+
+  The `chassis_control_xxx` node is the main node of the package, responsible for processing and publishing chassis velocity, chassis functions, and chassis data. At the hardware level, this node controls the USBCAN / USB-RS232 device for data communication with the VCU.
+
+#### 6.8.1 Subscribed Topics
+
+- **`/cmd_vel`** (`geometry_msgs/Twist`)  
+  Velocity topic – upon subscription, motion commands are sent to the chassis.
+
+- **`/vcu_control`** (`jcrobots_vcu_cpp/Control`)  
+  `/vcu_control` (`vcu_topic_interface/Control`)  
+  Chassis control topic, containing:
+  - `sports_mode` – motion mode
+  - `function` – function control
+  - `mosfet` – switch control
+
+---
+
+#### 6.8.2 Published Topics
+
+- **`/vcu_info`** (`jcrobots_vcu_cpp/Information`)  
+  `/vcu_info` (`vcu_topic_interface/Information`)  
+  Chassis information topic, containing the following fields:
+
+| Field | Description |
+| :--- | :--- |
+| `bus_voltage` | Bus voltage, unit V, resolution 0.01/0.1 |
+| `bus_current` | Bus current, unit A, resolution 0.01/0.1 |
+| `temperature_max` | Battery max temperature, unit °C, resolution 1 |
+| `temperature_min` | Battery min temperature, unit °C, resolution 1 |
+| `soc` | Battery remaining capacity, unit %, resolution 1 |
+| `soh` | Battery state of health, unit %, resolution 1 |
+| `function_status` | Function status – see 4.1 Function Status |
+| `work_mode` | Operating mode – see 4.2 Operating Mode |
+| `light_status` | Lighting status – see 4.3 Lighting Status |
+| `device_status` | Device status – see 4.4 Device Status |
+| `collision_status` | Collision status – see 4.5 Collision Status |
+| `obstacle_avoidance` | Obstacle avoidance status – see 4.6 Obstacle Avoidance Status |
+| `battery_status` | Battery status – see 4.7 Battery Status |
+| `motor_speed[]` | Motor speeds, unit rpm, resolution 1 |
+| `motor_current[]` | Motor currents, unit A, resolution 0.01/0.1/1 |
+| `steering_angle[]` | Steering angles, unit deg, resolution 0.1 |
+| `steering_current[]` | Steering motor currents, unit A, resolution 0.01/0.1/1 |
+| `linear_velocity` | Chassis linear velocity, unit m/s, resolution 0.001 |
+| `angular_velocity` | Chassis angular velocity, unit rad/s, resolution 0.001 |
+| `mileage` | Total distance travelled, unit m, resolution 1, saved on power‑off |
+| `drive_fault_codes[]` | Driver fault status – see 4.8 Driver Fault Codes |
+| `wheel_mileage[]` | Wheel odometer values, unit m, resolution 0.0001, cleared on power‑off |
+
+---
+
+### 6.9 Common Issues
+
+#### 6.9.1 Member `len8_dlc` or `len` does not exist
+
+<img width="455" height="260" alt="image" src="https://github.com/user-attachments/assets/3ab34e38-239a-4cfb-ab7b-21833f42e6cd" />
+
+**Error cause:** This is due to differences between Ubuntu versions.
+
+**Solution:** `len` refers to the byte length of the CAN frame received via SocketCAN. Replace it with the field name used in your current system's CAN frame structure (e.g., replace `len` with `can_dlc`).
+
+---
+
+#### 6.9.2 `open device error!`
+
+<img width="523" height="113" alt="image" src="https://github.com/user-attachments/assets/6f349cbf-ed73-47bc-a135-118a0662f6aa" />
+
+
+**Error cause 1:** CANalyst-II (Premium Edition) does not support Linux.
+
+**Solution 1:** Replace it with CANalyst-II (Linux Edition).
+
+**Error cause 2:** The USBCAN device lacks sufficient permissions.
+
+**Solution 2:** Add a udev rule for the CANalyst-II device.
+
+---
+
+#### 6.9.3 Error loading shared library
+
+<img width="554" height="59" alt="image" src="https://github.com/user-attachments/assets/fb78a2ae-0d46-4e0a-a282-0b858a614f28" />
+
+
+**Error cause:** The CANalyst-II dynamic link library has not been configured, or the dynamic linker cache has not been updated after configuration.
+
+---
+
+#### 6.9.4 Compilation fails with both ROS2 Foxy and Humble installed on the same computer
+
+<img width="554" height="230" alt="image" src="https://github.com/user-attachments/assets/62833258-9206-4057-af7f-4a3d2d823cb7" />
+
+
+**Solution:** Select the desired ROS2 version by setting the appropriate environment variables, or remove the other version entirely.
+
+---
+
+### 6.10 ROS Development Package Download
+ROS Development Kit Download: (Please open this link in your browser or app to download)
+
+[ros1开发包_V0.2_x86-64.zip](https://www.yuque.com/attachments/yuque/0/2024/zip/35413540/1730515020910-d8a3daa0-5493-4cd2-a308-8103e2f25389.zip)
+
+[ros1开发包_V0.2_arm64.zip](https://www.yuque.com/attachments/yuque/0/2024/zip/35413540/1730515062207-4d63162c-dc1c-4e87-8481-1034bfaf083d.zip)
+
+[ros2开发包_V0.4_x86_64.zip](https://www.yuque.com/attachments/yuque/0/2024/zip/35413540/1730515075908-2265177c-6eaf-4a57-a97f-aad6b936191d.zip)
+
+[ros2开发包_V0.4_arm64.zip](https://www.yuque.com/attachments/yuque/0/2024/zip/35413540/1730515086057-45dde6c0-4cf3-407a-9f03-3d017ca22310.zip)
+
+_Note: VCU firmware version V4.11.x and above support ROS._
+
+---
+
+## VII. Controller LAN Protocol
 
 ### 7.1 Overview
-Standard Modbus‑TCP with function codes 03, 06, 10. Register definitions are identical to Modbus‑RTU. Ethernet module is optional.
 
-### 7.2 Function Codes and Data Description
-Examples for read holding registers (0x03), write single (0x06), write multiple (0x10) – with MBAP headers (transaction ID, protocol ID, length, unit ID).
+The VCU adopts the standard **Modbus‑TCP** protocol and supports Function Codes **03**, **06**, and **10**. The register definitions are identical to those used in Modbus‑RTU.
+
+*Note: The Ethernet module is optional and requires separate purchase.*
+
+---
+
+### 7.2 Function Codes and Communication Data Description
+
+#### 7.2.1 Read Holding Registers
+
+Example: Read 6 consecutive words from VCU register address **0FA0H**. The frame structure is described below:
+
+| Table 7.1 Modbus TCP Request Command | | | 
+| :---: | :--- | :---: |
+| MBAP Header | Field | Value |
+| | Transaction Identifier | 00 01 |
+| | Protocol Identifier | 00 00 |
+| | Length | 00 06 |
+| Unit Identifier | | 01 |
+| Function Code | | 03 |
+| Starting Address | | 0F A0 |
+| Quantity of Registers | | 00 06 |
+
+| Table 7.2 Modbus TCP Response Message | | |
+| :---: | :--- | :---: |
+| MBAP Header | Field | Value |
+| | Transaction Identifier | 00 01 |
+| | Protocol Identifier | 00 00 |
+| | Length | 00 0F |
+| Unit Identifier | | 01 |
+| Function Code | | 03 |
+| Byte Count | | 0C |
+| Data Values | | 13 88 01 F4 00 20 00 1F 00 63 00 64 |
+
+---
+
+#### 7.2.2 Write Single Register
+
+Example: Write 200 (00C8H) to VCU register address **0410H**. The frame structure is described below:
+
+| Table 7.3 Modbus TCP Request Command | | |
+| :---: | :--- | :---: |
+| MBAP Header | Field | Value |
+| | Transaction Identifier | 00 01 |
+| | Protocol Identifier | 00 00 |
+| | Length | 00 06 |
+| Unit Identifier | | 01 |
+| Function Code | | 06 |
+| Register Address | | 04 10 |
+| Register Value | | 00 C8 |
+
+| Table 7.4 Modbus TCP Response Message | | |
+| :---: | :--- | :---: |
+| MBAP Header | Field | Value |
+| | Transaction Identifier | 00 01 |
+| | Protocol Identifier | 00 00 |
+| | Length | 00 06 |
+| Unit Identifier | | 01 |
+| Function Code | | 06 |
+| Register Address | | 04 10 |
+| Register Value | | 00 C8 |
+
+---
+
+#### 7.2.3 Write Multiple Registers
+
+Example: Write 200 (00C8H) and 500 (01F4H) to VCU register addresses **0410H** and **0411H** respectively. The frame structure is described below:
+
+| Table 7.5 Modbus TCP Request Command | | |
+| :---: | :--- | :---: |
+| MBAP Header | Field | Value |
+| | Transaction Identifier | 00 01 |
+| | Protocol Identifier | 00 00 |
+| | Length | 00 0B |
+| Unit Identifier | | 01 |
+| Function Code | | 10 |
+| Starting Address | | 04 10 |
+| Quantity of Registers | | 00 02 |
+| Byte Count | | 04 |
+| Register Values | | 00 C8 01 F4 |
+
+| Table 7.6 Modbus TCP Response Message | | |
+| :---: | :--- | :---: |
+| MBAP Header | Field | Value |
+| | Transaction Identifier | 00 01 |
+| | Protocol Identifier | 00 00 |
+| | Length | 00 06 |
+| Unit Identifier | | 01 |
+| Function Code | | 10 |
+| Starting Address | | 04 10 |
+| Quantity of Registers | | 00 02 |
+
+---
 
 ### 7.3 Ethernet Module Configuration
-Use DTU configuration tool:
-1. Connect PC and VCU via Ethernet (direct or same LAN).
-2. Open DTU tool, search device.
-3. Set mode to ModbusTCP‑>RTU.
-4. Set gateway, IP, port.
-5. Write parameters and reboot.
 
-*(Tool download link provided)*
+1. Connect the PC and the VCU directly via an Ethernet cable, or ensure they are on the same local network.
+2. Open the DTU configuration tool.
+3. Search for the device.
+4. Set the operating mode to **ModbusTCP → RTU**.
+5. Configure the gateway, IP address, port, etc.
+6. Write the parameters and reboot for the changes to take effect.
+
+<img width="1366" height="705" alt="image" src="https://github.com/user-attachments/assets/eb429f95-2720-41f4-843f-03e3cb4f368a" />
+
+Figure 7.1 DTU Configuration Tool
+
+[DTUConfigTool_V5.1中性版.zip](https://www.yuque.com/attachments/yuque/0/2026/zip/35413540/1783663701907-cbd4fdd2-9f2a-498d-ba95-8fc7baf75e83.zip)
 
 ---
 
 ## VIII. Version History
 
-| Firmware Version | Protocol Version |
+| Table 8.1 Firmware Version vs. Protocol Version Reference | |
 | :---: | :---: |
+| Firmware Version | Protocol Version |
 | V4.0.0 ~ V4.8.x | V2.0 |
 | V4.9.x ~ V4.10.x | V2.1 |
 | V4.11.x ~ V4.13.x | V2.2 |
@@ -1455,27 +1869,63 @@ Use DTU configuration tool:
 
 ## IX. Update Log
 
-| Version | Date | Changes |
-| :---: | :---: | --- |
-| V2.0 | 2022.11.24 | Initial release |
-| V2.1 | 2023.12.11 | Steering resolution 1→0.1; modified 0x201,0x202; added 0x209,0x20A,0x20B; changed periods; etc. |
-| V2.2 | 2024.04.19 | Unified CAN report format; MODBUS registers changed to wheel odometer. |
-| V2.3 | 2024.11.22 | Changed periods of 0x202,0x209,0x204,0x206 to 100ms; 0x201,0x208 to 1000ms; added rated power; etc. |
-| V2.4 | 2025.07.21 | Updated pin definitions for V1.5+; modified current descriptions; software V3.14.0. |
-| V2.5 | 2025.11.01 | Mosfet switches moved to 0x1FE/0x1FD; separate control bytes for emergency, parking, ultrasonic, lidar; added brake, HV enable, driver enable parameters; new OWK and UWB‑AOA modes. |
-| V2.6 | 2026.01.16 | Added Chapter VII – LAN Protocol. |
-| V2.7 | 2026.04.13 | Added Independent Control motion mode; renamed Ackermann to Default; added lidar zones to collision status. |
-| V2.8 | 2026.06.26 | Added CAN reports 0x20C and 0x20D; added MODBUS registers 4202~4207. |
+| Table 9.1 Update Log | | |
+| :---: | :---: | :--- |
+| Version | Date | Change Description |
+| V2.0 | 2022.11.24 | Initial release. |
+| V2.1 | 2023.12.11 | 1. Steering angle resolution changed from 1 to 0.1.<br/>2. Modified the content of CAN data reports 0x201 and 0x202.<br/>3. Changed the reporting period of 0x201, 0x202, and 0x208 to 500ms.<br/>4. Added new CAN data report 0x209 to display driver fault codes 1~8.<br/>5. Added new CAN data reports 0x20A and 0x20B to display wheel odometer values.<br/>6. Changed the CAN data reporting period for "four‑wheel‑independent‑steering chassis" to 20ms.<br/>7. Reallocated RS232 register addresses.<br/>8. Revised Chapter 4 "Status Descriptions" to include function status, operating mode, lighting status, device status, collision status, obstacle avoidance status, and battery status.<br/>9. Updated Chapter 5 "JcrobotsVCU Operation" to correspond to host software version V3.7.0.<br/>10. Modified the exception response for Modbus‑RTU. |
+| V2.2 | 2024.04.19 | 1. Modified the content of CAN data reports so that all chassis use a unified reporting format.<br/>2. Changed MODBUS registers "Absolute Encoder Count 1~4" to "Wheel Odometer 1~4". |
+| V2.3 | 2024.11.22 | 1. Changed the reporting period of CAN data 0x202, 0x209, 0x204, and 0x206 to 100ms, and 0x201 and 0x208 to 1000ms.<br/>2. Changed the "Operating Mode" data format to decimal.<br/>3. Added VCU rated power information.<br/>4. Refined the signal value description for "Front Wheel Angle". |
+| V2.4 | 2025.07.21 | 1. Updated pin definitions for hardware V1.5 and above.<br/>2. Revised the descriptions of drive/steering motor currents in the CAN/RS232 protocols.<br/>3. Updated the JcrobotsVCU software function descriptions to version V3.14.0. |
+| V2.5 | 2025.11.01 | 1. CAN protocol Mosfet switches are now controlled using IDs 0x1FE and 0x1FD; Emergency stop, parking brake, ultrasonic obstacle avoidance, and lidar obstacle avoidance are now controlled via bytes 1, 2, 3, and 7 of ID 0x1FF, respectively.<br/>2. Changed all "Obstacle Avoidance" references to "Ultrasonic Obstacle Avoidance".<br/>3. Added new function status bits: bit5 "Battery HV enable", bit6 "Driver enable", bit7 "Lidar obstacle avoidance".<br/>4. Added new parameters: P0.07 "Braking", P0.08 "Battery HV on/off", P0.09 "Driver enable".<br/>5. Added new operating modes: "5: OWK mode", "6: UWB‑AOA mode".<br/>6. In the RS232 protocol, changed bit3 of P0.05 function control from "Following" to "Lidar obstacle avoidance". |
+| V2.6 | 2026.01.16 | 1. Added Chapter VII "Controller LAN Protocol".|
+| V2.7 | 2026.04.13 | 1. Added "Independent Control" motion mode, allowing independent control of left/right side speeds and steering angles.<br/>2. Renamed motion mode "Ackermann" to "Default".<br/>3. Added lidar obstacle avoidance zones 1 - 3 to collision status bits 4 - 6. |
+| V2.8 | 2026.06.26 | 1. Added CAN upload messages in Section 2.6.1: 0x20C for analog signal detection, and 0x20D for digital input status and MOS switch status.<br/>2. Added MODBUS real‑time status registers 4202~4207 in Section 3.5.3. |
 
 ---
 
 ## X. Further Information
 
 **Company:** 极创机器人智能科技（山东）有限公司 (Jichuang Robotics Intelligent Technology (Shandong) Co., Ltd.)  
+
 **Address:** Taishan Robot Maker Factory, No.72 Boyang Road, Taishan District, Tai'an City, Shandong Province, China  
-**Email:** jcrobot@163.com  
+
+**Email:** jcrobot@163.com | ddpjcrobot@outlook.com
+
 **Website:** [www.jcrobots.com](http://www.jcrobots.com/)
 
 **PDF version download** (as of July 15, 2024. Please refer to the web version for updates).
 
+[《JC-VCU-02产品指南 V2.2》及软体.pdf](https://www.yuque.com/attachments/yuque/0/2024/pdf/2802136/1721048110225-e63eb94e-067d-4b7f-b333-935d00c2fd9e.pdf)
+
 ---
+
+<font style="color:rgb(0,0,0);"></font>
+
+**<font style="color:#ED740C;">More content：↓</font>**
+
+《移动机器人底盘-选型手册》极创机器人
+
+[https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/zg3c62p74va9m11k?singleDoc#](https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/zg3c62p74va9m11k?singleDoc#) 
+
+《极创机器人介绍》
+
+[https://www.yuque.com/jichuangjiqirenjcrobot/ddar04/fiv60yef6nzll4q4?singleDoc#](https://www.yuque.com/jichuangjiqirenjcrobot/ddar04/fiv60yef6nzll4q4?singleDoc#) 
+
+《既往产品设计-极创机器人》
+
+[https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/zt9i7006ruiyhgsg?singleDoc#](https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/zt9i7006ruiyhgsg?singleDoc#) 
+
+《极创机器人展会》
+
+[https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/ouompaiygghd5evy?singleDoc#](https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/ouompaiygghd5evy?singleDoc#) 
+
+《极创机器人工厂》
+
+[https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/no2a6xlk1r38m6ye?singleDoc#](https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/no2a6xlk1r38m6ye?singleDoc#) 
+
+《如何开始项目合作？》
+
+[https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/omnhpcz8vesl0o27?singleDoc#](https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/omnhpcz8vesl0o27?singleDoc#) 
+
+****
