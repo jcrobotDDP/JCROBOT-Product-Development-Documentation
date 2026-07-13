@@ -11,7 +11,9 @@
 **Applicable Product Series**: JC\-VCU\-02 V1\.4 and above
 
 ---
-## I. Product Introduction
+
+<details>
+<summary><h2 style="display:inline; color: #4ECDC4"> I. Product Introduction</h2></summary>
 
 ### 1.1 Overview
 <img width="3840" height="2160" alt="image" src="https://github.com/user-attachments/assets/0ef0b5cb-461f-40e6-8aab-4b7f6ccca722" />
@@ -61,7 +63,7 @@ The two CAN buses operate independently, so users need not worry about ID confli
 | 6 | RUN | Running indicator LED. |
 | 7 | RXD | Reception indicator – flashes when the VCU receives a valid command. |
 | 8 | LAN | Modbus‑TCP communication interface. <font color="#DF2A3F">Note: Ethernet module is optional, requires separate purchase.</font> |
-
+   
 ---
 
 **Chassis Controller (VCU) Port Definition Table 2**
@@ -98,9 +100,12 @@ The two CAN buses operate independently, so users need not worry about ID confli
 
 *Note: P2_Pin1 provides 12V (for hardware V1.4) or 5V (for hardware V1.5 and above).*
 
+</details>
+
 ---
 
-## II. Controller CAN Protocol
+<details>
+<summary><h2 style="display:inline; color: #4ECDC4"> II. Controller CAN Protocol</h2></summary>
 
 ### 2.1 Default Factory Configuration
 
@@ -745,9 +750,12 @@ General data reporting covers information common to most chassis, including batt
 **DBC File Download:** *(Please open the link in a browser or app)*  
 [jcrobots_vcu02_canbus_v2.2a.7z](https://www.yuque.com/attachments/yuque/0/2024/7z/35413540/1727771370317-52a2e6be-13a7-482f-ba2f-72d9385c2cff.7z)
 
+</details>
+
 ---
 
-## III. Controller RS232 Protocol
+<details>
+<summary><h2 style="display:inline; color: #4ECDC4"> III. Controller RS232 Protocol</h2></summary>
 
 ### 3.1 Overview
 
@@ -1099,9 +1107,12 @@ For example: Writing the value 1000 to VCU data address 03E4H returns an error m
 
 > \(^{(1)}\) These registers are used only when P0.04 is set to **4 (Independent Control Mode)**.
 
+</details>
+   
 ---
 
-## IV. Status Descriptions
+<details>
+<summary><h2 style="display:inline; color: #4ECDC4"> IV. Status Descriptions</h2></summary>
 
 ### 4.1 Function Status
 
@@ -1276,9 +1287,12 @@ The VCU fault status is automatically reported via CAN commands. The data type i
 | Bit6 | Reserved | Bit14 | Obstacle sensor 7 triggered |
 | Bit7 | Reserved | Bit15 | Obstacle sensor 8 triggered |
 
+</details>
+   
 ---
 
-## V. JcrobotsVCU Operation
+<details>
+<summary><h2 style="display:inline; color: #4ECDC4"> V. JcrobotsVCU Operation</h2></summary>
 
 ### 5.1 Connection
 Use a USB‑to‑RS232 cable. The software automatically searches and connects to the VCU. Alternatively, click the tool assistant at the lower right.
@@ -1361,10 +1375,13 @@ Software Download: (Please open this link in your browser or app to download)
 
 [JcrobotsVCU_V3.8.1.zip](https://www.yuque.com/attachments/yuque/0/2024/zip/35413540/1730440791093-d5d1a6b3-040f-47d2-b90e-460aabc61572.zip)
 
+</details>
+   
 ---
 
-## VI. ROS1 & ROS2 Configuration
-
+<details>
+<summary><h2 style="display:inline; color: #4ECDC4"> VI. ROS1 & ROS2 Configuration</h2></summary>
+   
 ### 6.1 Overview
 The VCU‑ROS package subscribes to `/cmd_vel` and translates it into CAN/RS232 commands. It also processes battery data, chassis status, encoders, odometer, and publishes `/vcu_info` topic.
 - ROS1 version: noetic
@@ -1738,10 +1755,13 @@ ROS Development Kit Download: (Please open this link in your browser or app to d
 
 _Note: VCU firmware version V4.11.x and above support ROS._
 
+</details>
+   
 ---
 
-## VII. Controller LAN Protocol
-
+<details>
+<summary><h2 style="display:inline; color: #4ECDC4"> VII. Controller LAN Protocol</h2></summary>
+   
 ### 7.1 Overview
 
 The VCU adopts the standard **Modbus‑TCP** protocol and supports Function Codes **03**, **06**, and **10**. The register definitions are identical to those used in Modbus‑RTU.
@@ -1853,10 +1873,13 @@ Figure 7.1 DTU Configuration Tool
 
 [DTUConfigTool_V5.1中性版.zip](https://www.yuque.com/attachments/yuque/0/2026/zip/35413540/1783663701907-cbd4fdd2-9f2a-498d-ba95-8fc7baf75e83.zip)
 
+</details>
+   
 ---
 
-## VIII. Version History
-
+<details>
+<summary><h2 style="display:inline; color: #4ECDC4"> VIII. Version History</h2></summary>
+   
 | Table 8.1 Firmware Version vs. Protocol Version Reference | |
 | :---: | :---: |
 | Firmware Version | Protocol Version |
@@ -1865,9 +1888,12 @@ Figure 7.1 DTU Configuration Tool
 | V4.11.x ~ V4.13.x | V2.2 |
 | V4.14.x ~ V4.20.x | V2.3 |
 
+</details>
+   
 ---
 
-## IX. Update Log
+<details>
+<summary><h2 style="display:inline; color: #4ECDC4"> IX. Update Log</h2></summary>
 
 | Table 9.1 Update Log | | |
 | :---: | :---: | :--- |
@@ -1882,9 +1908,12 @@ Figure 7.1 DTU Configuration Tool
 | V2.7 | 2026.04.13 | 1. Added "Independent Control" motion mode, allowing independent control of left/right side speeds and steering angles.<br/>2. Renamed motion mode "Ackermann" to "Default".<br/>3. Added lidar obstacle avoidance zones 1 - 3 to collision status bits 4 - 6. |
 | V2.8 | 2026.06.26 | 1. Added CAN upload messages in Section 2.6.1: 0x20C for analog signal detection, and 0x20D for digital input status and MOS switch status.<br/>2. Added MODBUS real‑time status registers 4202~4207 in Section 3.5.3. |
 
+</details>
+   
 ---
 
-## X. Further Information
+<details>
+<summary><h2 style="display:inline; color: #4ECDC4"> X. Further Information</h2></summary>
 
 **Company:** 极创机器人智能科技（山东）有限公司 (Jichuang Robotics Intelligent Technology (Shandong) Co., Ltd.)  
 
@@ -1929,3 +1958,5 @@ Figure 7.1 DTU Configuration Tool
 [https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/omnhpcz8vesl0o27?singleDoc#](https://www.yuque.com/jichuangjiqirenjcrobot/hgrz7v/omnhpcz8vesl0o27?singleDoc#) 
 
 ****
+
+</details>
