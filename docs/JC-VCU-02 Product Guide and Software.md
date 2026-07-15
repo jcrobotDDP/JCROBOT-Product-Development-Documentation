@@ -1921,7 +1921,7 @@ Figure 7.1 DTU Configuration Tool
 
 **Email:** jcrobot@163.com | ddpjcrobot@outlook.com
 
-**Website:** [www.jcrobots.com](http://www.jcrobots.com/)
+**Website:** [https://robot-chassis.com/](https://robot-chassis.com/) 
 
 **PDF version download** (as of July 15, 2024. Please refer to the web version for updates).
 
