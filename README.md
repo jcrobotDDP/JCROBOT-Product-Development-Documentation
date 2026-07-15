@@ -2,6 +2,7 @@
 👋 Welcome to the JCROBOT Technical Support Platform. Here you will find documentation on chassis peripheral components, control guides, and more. For instructions on how to control the robot from the control terminal, please see below ↓
 ## 📚 Table of contents
 - [JC-VCU-02 Product Guide and Software](./docs/JC-VCU-02%20Product%20Guide%20and%20Software.md)
+- [VCUmini User Manual](https://github.com/jcrobotDDP/JCROBOT-Product-Development-Documentation/blob/main/docs/VCUmini_UserManual.md)
 
 ## 📁 Repository Structure
 
@@ -10,7 +11,7 @@
 ├── README.md                    # Repository main document
 ├── docs/                        # JCROBOT-Product-Development-Documentation
 │   ├── JC-VCU-02 Product Guide and Software.md
-│   ├── 
+│   ├── VCUmini User Manual
 │   ├── 
 │   ├── 
 │   ├── 
