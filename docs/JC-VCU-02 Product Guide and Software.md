@@ -1860,18 +1860,43 @@ Example: Write 200 (00C8H) and 500 (01F4H) to VCU register addresses **0410H** a
 
 ### 7.3 Ethernet Module Configuration
 
-1. Connect the PC and the VCU directly via an Ethernet cable, or ensure they are on the same local network.
-2. Open the DTU configuration tool.
-3. Search for the device.
-4. Set the operating mode to **ModbusTCP → RTU**.
+#### 7.3.1 DTU Configuration Tool (New Model)
+
+1. Connect the PC directly to the VCU with an Ethernet cable, or ensure that both are on the same local area network (LAN).
+2. Open the DTU Configuration Tool.
+3. Search for devices.
+4. Configure the gateway, IP address, etc.
+5. Set the operating mode to **Modbus Gateway**.
+6. Configure the local port.
+7. Submit the settings and restart the device to apply them.
+   
+<img width="1050" height="606" alt="image" src="https://github.com/user-attachments/assets/343ae743-70bb-4849-bda6-9ae81fff1f81" />
+
+Figure 4.1 DTU Configuration Tool – Basic Settings  
+
+<img width="1050" height="606" alt="image" src="https://github.com/user-attachments/assets/53d43b65-8851-44d4-949e-7886adafb2cf" />
+
+Figure 4.2 DTU Configuration Tool – Serial Port Settings
+
+dtu-config-tool-x64-nostatement Setup.zip
+
+https://drive.google.com/file/d/1UydPv4vrlS61QfBRLSjE32Rq-JKVEoOK/view?usp=sharing
+
+#### 7.3.2 DTU Configuration Tool (Old Model)
+
+1. Connect the PC directly to the VCU with an Ethernet cable, or ensure that both are on the same local area network (LAN).
+2. Open the DTU Configuration Tool.
+3. Search for devices.
+4. Set the operating mode to **ModbusTCP -> RTU**.
 5. Configure the gateway, IP address, port, etc.
-6. Write the parameters and reboot for the changes to take effect.
+6. Write the parameters and restart the device to apply them.
+<img width="1366" height="705" alt="image" src="https://github.com/user-attachments/assets/25a4aeeb-315c-4486-a281-bc677a628a09" />
 
-<img width="1366" height="705" alt="image" src="https://github.com/user-attachments/assets/eb429f95-2720-41f4-843f-03e3cb4f368a" />
+Figure 7.3 DTU Configuration Tool
 
-Figure 7.1 DTU Configuration Tool
+DTUConfigTool_V5.1中性版
 
-[DTUConfigTool_V5.1中性版.zip](https://www.yuque.com/attachments/yuque/0/2026/zip/35413540/1783663701907-cbd4fdd2-9f2a-498d-ba95-8fc7baf75e83.zip)
+https://drive.google.com/file/d/1kcUmeeX6Uk4qVbejO7Fn6ZMTJ6aq8nke/view?usp=sharing
 
 </details>
    
@@ -1907,7 +1932,7 @@ Figure 7.1 DTU Configuration Tool
 | V2.6 | 2026.01.16 | 1. Added Chapter VII "Controller LAN Protocol".|
 | V2.7 | 2026.04.13 | 1. Added "Independent Control" motion mode, allowing independent control of left/right side speeds and steering angles.<br/>2. Renamed motion mode "Ackermann" to "Default".<br/>3. Added lidar obstacle avoidance zones 1 - 3 to collision status bits 4 - 6. |
 | V2.8 | 2026.06.26 | 1. Added CAN upload messages in Section 2.6.1: 0x20C for analog signal detection, and 0x20D for digital input status and MOS switch status.<br/>2. Added MODBUS real‑time status registers 4202~4207 in Section 3.5.3. |
-
+| V2.9 | 2026.08.03 | Added description of the DTU Configuration Tool (New Model) in Section 7.3. |
 </details>
    
 ---
